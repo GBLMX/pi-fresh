@@ -189,7 +189,9 @@ function applyProfile(name) {
 }
 
 // ---------- 功能 ----------
+let launched = false; // 启动 pi 后忽略 readline 缓冲里残留的 line，防误 spawn/误 exit
 function launchPi() {
+  launched = true;
   console.log("\n正在启动 pi ...\n");
   rl.close(); // 释放 stdin 并恢复终端模式，避免 launcher 与 pi 抢键盘输入
   const child = spawn(PI_NODE, [PI_CLI], { stdio: "inherit", env: process.env });
@@ -288,6 +290,7 @@ function render() {
 }
 
 rl.on("line", (line) => {
+  if (launched) return;
   const a = line.trim();
 
   if (state === "main") {
