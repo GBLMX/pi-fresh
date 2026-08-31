@@ -114,8 +114,12 @@ function toggleExtension(item) {
     return `${item.name} 已${item.enabled ? "禁用" : "启用"}`;
   }
   const newPath = item.enabled ? item.path + ".disabled" : item.path.slice(0, -".disabled".length);
-  fs.renameSync(item.path, newPath);
-  return `${item.name} 已${item.enabled ? "禁用" : "启用"}`;
+  try {
+    fs.renameSync(item.path, newPath);
+    return `${item.name} 已${item.enabled ? "禁用" : "启用"}`;
+  } catch (e) {
+    return `${item.name} 操作失败: ${e.message}`;
+  }
 }
 
 // ---------- 配置组合 ----------
