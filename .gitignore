@@ -7,6 +7,9 @@
 # 禁用扩展列表（本地状态，不提交）
 disabled-packages.json
 
+# 配置组合（本地状态，不提交）
+profiles.json
+
 # Python
 __pycache__/
 *.pyc
