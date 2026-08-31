@@ -1,0 +1,414 @@
+{
+  "schema": 2,
+  "description": "pi slash 命令描述的中文映射表（中间层）。按命令 name 匹配，与 pi 版本无关；pi update 不会覆盖此文件。en 字段用于 update 后检测英文描述是否变化。builtinCommands 对应 bundle 的 BUILTIN_SLASH_COMMANDS；extensionCommands 对应各 npm 包 registerCommand() 的 description。",
+  "builtinCommands": {
+    "settings": {
+      "en": "Open settings menu",
+      "zh": "打开设置菜单"
+    },
+    "model": {
+      "en": "Select model (opens selector UI)",
+      "zh": "选择模型（打开选择器界面）"
+    },
+    "tree": {
+      "en": "Navigate session tree (switch branches)",
+      "zh": "浏览会话树（切换分支）"
+    },
+    "thinking": {
+      "en": "Set thinking level",
+      "zh": "设置思考级别"
+    },
+    "scoped-models": {
+      "en": "Enable/disable models for Ctrl+P cycling",
+      "zh": "启用/禁用模型（Ctrl+P 循环切换）"
+    },
+    "export": {
+      "en": "Export session (HTML default, or specify path: .html/.jsonl)",
+      "zh": "导出会话（默认 HTML，可指定 .html/.jsonl 路径）"
+    },
+    "import": {
+      "en": "Import and resume a session from a JSONL file",
+      "zh": "从 JSONL 文件导入并恢复会话"
+    },
+    "share": {
+      "en": "Share session as a secret GitHub gist",
+      "zh": "将会话分享为 GitHub 私密 gist"
+    },
+    "copy": {
+      "en": "Copy last agent message to clipboard",
+      "zh": "复制最后一条 agent 消息到剪贴板"
+    },
+    "name": {
+      "en": "Set session display name",
+      "zh": "设置会话显示名称"
+    },
+    "session": {
+      "en": "Show session info and stats",
+      "zh": "显示会话信息和统计"
+    },
+    "changelog": {
+      "en": "Show changelog entries",
+      "zh": "显示更新日志"
+    },
+    "hotkeys": {
+      "en": "Show all keyboard shortcuts",
+      "zh": "显示所有键盘快捷键"
+    },
+    "fork": {
+      "en": "Create a new fork from a previous user message",
+      "zh": "从之前的一条用户消息创建新分支"
+    },
+    "clone": {
+      "en": "Duplicate the current session at the current position",
+      "zh": "在当前位置复制当前会话"
+    },
+    "trust": {
+      "en": "Save project trust decision for future sessions",
+      "zh": "保存项目信任决定"
+    },
+    "login": {
+      "en": "Configure provider authentication",
+      "zh": "配置提供商认证"
+    },
+    "logout": {
+      "en": "Remove provider authentication",
+      "zh": "移除提供商认证"
+    },
+    "new": {
+      "en": "Start a new session",
+      "zh": "开始新会话"
+    },
+    "compact": {
+      "en": "Manually compact the session context",
+      "zh": "手动压缩会话上下文"
+    },
+    "resume": {
+      "en": "Resume a different session",
+      "zh": "恢复另一个会话"
+    },
+    "reload": {
+      "en": "Reload keybindings, extensions, skills, prompts, themes, and context files",
+      "zh": "重新加载键位、扩展、技能、提示词、主题和上下文文件"
+    },
+    "quit": {
+      "en": "Quit ${APP_NAME}",
+      "zh": "退出"
+    }
+  },
+  "extensionCommands": {
+    "bash-mode": {
+      "en": "Toggle sticky bash mode (on, off, toggle)",
+      "zh": "切换粘性 bash 模式（on/off/toggle）"
+    },
+    "bash-reset": {
+      "en": "Reset the managed bash session",
+      "zh": "重置受管理的 bash 会话"
+    },
+    "cache-optimizer": {
+      "en": "Configure and diagnose Pi cache behavior",
+      "zh": "配置和诊断 Pi 缓存行为"
+    },
+    "cd": {
+      "en": "Switch the Pi session working directory",
+      "zh": "切换 Pi 会话的工作目录"
+    },
+    "curator": {
+      "en": "Toggle or configure the search curator workflow",
+      "zh": "切换或配置搜索策展工作流"
+    },
+    "fast": {
+      "en": "Toggle Codex Fast mode",
+      "zh": "切换 Codex 快速模式"
+    },
+    "google-account": {
+      "en": "Show the active Google account for Gemini Web",
+      "zh": "显示 Gemini Web 当前使用的 Google 账号"
+    },
+    "intake": {
+      "en": "Run an intake questionnaire from a JSON spec file. Optionally write the result to --output.",
+      "zh": "从 JSON 规格文件运行问卷。可用 --output 写入结果。"
+    },
+    "lens-allow-edit": {
+      "en": "Allow one edit to a file without a prior read. Usage: /lens-allow-edit <path>",
+      "zh": "允许对文件进行一次未经读取的编辑。用法：/lens-allow-edit <path>"
+    },
+    "lens-context-toggle": {
+      "en": "Toggle automatic context injection on/off for the current session (tools/LSP/read-guard/formatting stay active). Usage: /lens-context-toggle",
+      "zh": "切换当前会话的自动上下文注入（工具/LSP/读守卫/格式化保持激活）。用法：/lens-context-toggle"
+    },
+    "lens-health": {
+      "en": "Show pi-lens runtime health: pipeline crashes, slow runners, and last dispatch latency. Usage: /lens-health",
+      "zh": "显示 pi-lens 运行时健康：管线崩溃、慢执行器、最近分发延迟。用法：/lens-health"
+    },
+    "lens-map": {
+      "en": "Render the review graph as a self-contained interactive HTML project map (pan/zoom/hover/click) and write it to disk. Usage: /lens-map",
+      "zh": "将评审图渲染为自包含的交互式 HTML 项目地图（平移/缩放/悬停/点击）并写入磁盘。用法：/lens-map"
+    },
+    "lens-perf": {
+      "en": "Show the slowest latency-log phases by p50 and p99 for the current process session and machine-wide active log window. Usage: /lens-perf",
+      "zh": "按 p50/p99 显示当前进程会话和机器级活跃日志窗口最慢的延迟阶段。用法：/lens-perf"
+    },
+    "lens-tdi": {
+      "en": "Show Technical Debt Index (TDI) and project health trend. Usage: /lens-tdi",
+      "zh": "显示技术债务指数（TDI）和项目健康趋势。用法：/lens-tdi"
+    },
+    "lens-toggle": {
+      "en": "Toggle pi-lens on/off for the current session. Usage: /lens-toggle",
+      "zh": "切换当前会话的 pi-lens 开/关。用法：/lens-toggle"
+    },
+    "lens-tools": {
+      "en": "Show pi-lens tool installation status: globally installed, auto-installed, or npx fallback. Usage: /lens-tools",
+      "zh": "显示 pi-lens 工具安装状态：全局安装、自动安装或 npx 回退。用法：/lens-tools"
+    },
+    "lens-widget-toggle": {
+      "en": "Show or hide the pi-lens diagnostics widget below the editor. Usage: /lens-widget-toggle",
+      "zh": "显示或隐藏编辑器下方的 pi-lens 诊断组件。用法：/lens-widget-toggle"
+    },
+    "mcp-auth": {
+      "en": "Authenticate with an MCP server (OAuth)",
+      "zh": "对 MCP 服务器进行身份验证（OAuth）"
+    },
+    "permission-system": {
+      "en": "Configure pi-permission-system logging and yolo-mode behavior",
+      "zh": "配置 pi-permission-system 的日志和 yolo 模式行为"
+    },
+    "pi-style": {
+      "en": "Configure pi-style for this session",
+      "zh": "为当前会话配置 pi-style"
+    },
+    "powerline": {
+      "en": "Configure powerline status (toggle, preset)",
+      "zh": "配置 powerline 状态（切换、预设）"
+    },
+    "powerline-perf": {
+      "en": "Show or reset opt-in editor performance profiling",
+      "zh": "显示或重置可选的编辑器性能分析"
+    },
+    "prompt-workflow": {
+      "en": "Run a prompt template through native pi-subagents: /prompt-workflow <name> [args]",
+      "zh": "通过原生 pi-subagents 运行提示词模板：/prompt-workflow <name> [args]"
+    },
+    "queue": {
+      "en": "Manage Powerline queued prompts and project aliases",
+      "zh": "管理 Powerline 队列提示词和项目别名"
+    },
+    "reply": {
+      "en": "Quote a previous user or assistant message into the editor",
+      "zh": "将之前的一条用户或助手消息引用到编辑器"
+    },
+    "run": {
+      "en": "Run one subagent through workflowScript: /run agent[output=file] [task] [--bg] [--fork]",
+      "zh": "通过 workflowScript 运行一个子代理：/run agent[output=file] [task] [--bg] [--fork]"
+    },
+    "search": {
+      "en": "Browse stored web search results",
+      "zh": "浏览已存储的网页搜索结果"
+    },
+    "stash-history": {
+      "en": "Open prompt history picker",
+      "zh": "打开提示词历史选择器"
+    },
+    "subagent-cost": {
+      "en": "Show parent and subagent child usage cost for this session",
+      "zh": "显示本会话父代理和子代理的用量成本"
+    },
+    "subagents": {
+      "en": "Administer subagents: inspect metadata and update models, thinking, or prompts",
+      "zh": "管理子代理：检查元数据并更新模型、思考级别或提示词"
+    },
+    "subagents-check-profile": {
+      "en": "Check whether a saved profile still points to usable models",
+      "zh": "检查保存的配置文件是否仍指向可用模型"
+    },
+    "subagents-detach": {
+      "en": "Detach the active foreground single-subagent run without terminating it",
+      "zh": "分离当前前台单子代理运行而不终止它"
+    },
+    "subagents-doctor": {
+      "en": "Show subagent diagnostics",
+      "zh": "显示子代理诊断信息"
+    },
+    "subagents-fleet": {
+      "en": "Open the live subagent fleet inspector",
+      "zh": "打开实时子代理群检查器"
+    },
+    "subagents-generate-profiles": {
+      "en": "Generate <provider>.quota and <provider>.quality subagent profiles",
+      "zh": "生成 <provider>.quota 和 <provider>.quality 子代理配置文件"
+    },
+    "subagents-guide": {
+      "en": "Show a packaged subagents guide topic",
+      "zh": "显示一个打包的子代理指南主题"
+    },
+    "subagents-inspect-rpc": {
+      "en": "Host integration bridge: answer an async child inspection request with a correlated widget payload (no model turn)",
+      "zh": "宿主集成桥接：用关联的组件负载响应异步子检查请求（无模型回合）"
+    },
+    "subagents-load-profile": {
+      "en": "Load a subagent profile into ~/.pi/agent/settings.json",
+      "zh": "将子代理配置文件加载到 ~/.pi/agent/settings.json"
+    },
+    "subagents-models": {
+      "en": "Show model mappings for discovered subagents",
+      "zh": "显示已发现子代理的模型映射"
+    },
+    "subagents-profiles": {
+      "en": "List saved subagent profiles",
+      "zh": "列出已保存的子代理配置文件"
+    },
+    "subagents-refine": {
+      "en": "Generate a bounded project-local refinement overlay for one subagent",
+      "zh": "为一个子代理生成有界的项目本地微调覆盖"
+    },
+    "subagents-refresh-provider-models": {
+      "en": "Refresh the cached model catalog for one provider",
+      "zh": "刷新某个提供商的缓存模型目录"
+    },
+    "subagents-steer": {
+      "en": "Steer a live async subagent run with a message, or one child of it with --child <child-id>",
+      "zh": "用消息引导一个活跃的异步子代理运行，或用 --child <child-id> 引导其某个子项"
+    },
+    "subagents-stop": {
+      "en": "Stop a current-session async subagent run, or one child of it with /subagents-stop <run-id> <child-id>",
+      "zh": "停止当前会话的异步子代理运行，或用 /subagents-stop <run-id> <child-id> 停止其某个子项"
+    },
+    "subagents-watchdog": {
+      "en": "Show or toggle the default-off subagent watchdog",
+      "zh": "显示或切换默认关闭的子代理看门狗"
+    },
+    "usage": {
+      "en": "Show usage for the current runtime account",
+      "zh": "显示当前运行时账号的用量"
+    },
+    "vibe": {
+      "en": "Set working message theme. Usage: /vibe [theme|off|mode|model|generate]",
+      "zh": "设置工作消息主题。用法：/vibe [theme|off|mode|model|generate]"
+    },
+    "vm": {
+      "en": "pi-vault-mind: manage collections, embedding, indexing, and config.",
+      "zh": "pi-vault-mind：管理集合、嵌入、索引和配置。"
+    },
+    "websearch": {
+      "en": "Open web search curator",
+      "zh": "打开网页搜索策展器"
+    }
+  },
+  "skillCommands": {
+    "pi-lens-ast-grep": {
+      "en": "Use when searching or replacing code patterns - use ast-grep instead of text search for semantic accuracy",
+      "zh": "搜索或替换代码模式时使用——用 ast-grep 代替文本搜索以获得语义准确性"
+    },
+    "pi-lens-lsp-navigation": {
+      "en": "Navigate code with IDE features and run proactive LSP diagnostics on files/folders/batches. Use as PRIMARY for code intelligence and type/error checks.",
+      "zh": "用 IDE 特性导航代码，并对文件/文件夹/批量运行主动 LSP 诊断。作为代码智能和类型/错误检查的主要工具。"
+    },
+    "pi-lens-write-ast-grep-rule": {
+      "en": "Use when writing a new pi-lens ast-grep rule YAML file — covers schema, drop path, gotchas, and NAPI runner constraints",
+      "zh": "编写新的 pi-lens ast-grep 规则 YAML 文件时使用——涵盖 schema、drop path、陷阱和 NAPI 运行器约束"
+    },
+    "pi-lens-write-tree-sitter-rule": {
+      "en": "Use when writing a new pi-lens tree-sitter query rule YAML file — covers schema, S-expression syntax, capture names, predicates, and gotchas",
+      "zh": "编写新的 pi-lens tree-sitter 查询规则 YAML 文件时使用——涵盖 schema、S 表达式语法、捕获名、谓词和陷阱"
+    },
+    "vault-mind": {
+      "en": "Universal append-only JSONL collection with LanceDB semantic search, full-text search, graph relationships, and tiered HITL (strict, gated, autopilot). Use when tracking structured facts, decisions, requirements, research, or any append-only record across projects. Supports dynamic context injection into prompts. Install the pi-vault-mind extension first.",
+      "zh": "通用追加式 JSONL 集合，带 LanceDB 语义搜索、全文搜索、图关系和分层 HITL（严格、门控、自动）。用于跨项目跟踪结构化事实、决策、需求、研究或任何追加式记录。支持向提示词动态注入上下文。请先安装 pi-vault-mind 扩展。"
+    },
+    "vault-mind-broadcaster": {
+      "en": "The NotebookLM Controller agent for pi-vault-mind. Triggered by @agent:podcast or status:needs-podcast. Uses nlm CLI or MCP tools to generate audio overviews, study guides, and flashcards from vault sources.",
+      "zh": "pi-vault-mind 的 NotebookLM 控制器代理。由 @agent:podcast 或 status:needs-podcast 触发。使用 nlm CLI 或 MCP 工具从 vault 源生成音频概览、学习指南和闪卡。"
+    },
+    "vault-mind-heavy-lifter": {
+      "en": "The Delegator agent for pi-vault-mind. Triggered by @agent:deep-analysis or @agent:refactor. Acts as a commander for external coding assistants (Claude Code, Gemini CLI) to handle massive context windows or complex codebase refactoring.",
+      "zh": "pi-vault-mind 的委派者代理。由 @agent:deep-analysis 或 @agent:refactor 触发。作为外部编码助手（Claude Code、Gemini CLI）的指挥官，处理海量上下文窗口或复杂代码库重构。"
+    },
+    "vault-mind-manager": {
+      "en": "The primary interactive agent (Synthesizer) for pi-vault-mind. Use for high-level planning, roadmap synthesis, and reviewing the output of subagents. Controls the overall narrative and final approval of knowledge content.",
+      "zh": "pi-vault-mind 的主要交互代理（综合器）。用于高层规划、路线图综合和审阅子代理输出。控制整体叙事和知识内容的最终审批。"
+    },
+    "vault-mind-miner": {
+      "en": "The Researcher agent for pi-vault-mind. Triggered by @agent:research or @agent:ingest. Responsible for knowledge ingestion, entity extraction, deduplication, and writing to the collections.",
+      "zh": "pi-vault-mind 的研究者代理。由 @agent:research 或 @agent:ingest 触发。负责知识摄取、实体提取、去重和写入集合。"
+    },
+    "vault-mind-setup": {
+      "en": "Setup and management assistant for pi-vault-mind (the passive Obsidian vault extension for pi). Use for first-time setup, configuration changes, troubleshooting, Obsidian plugin recommendations, upgrade paths, multi-vault management, and dependency auditing. Trigger phrases: \"set up vault-mind\", \"configure obsidian\", \"install pi-vault-mind\", \"/vm setup\", \"watcher not working\", \"vault-mind troubleshooting\", \"add another vault\", \"upgrade pi-vault-mind\".",
+      "zh": "pi-vault-mind 的设置与管理助手。用于首次设置、配置更改、故障排查、Obsidian 插件推荐、升级路径、多 vault 管理和依赖审计。"
+    },
+    "council-mode": {
+      "en": "Run a bounded supervisor-mediated advisor council. Use when the user asks for council mode, asks to convene advisors, debate a decision, cross-examine recommendations, or run /council.",
+      "zh": "运行一个有界的、由监督者主持的顾问委员会。当用户要求 council 模式、召集顾问、辩论决策、交叉审查建议或运行 /council 时使用。"
+    },
+    "pi-subagents": {
+      "en": "Delegate to builtin or custom subagents for single-agent handoffs, parallel review, scripted chaining, async work, forked context, and coordinated workflows. Use when one parent agent should stay in control while children supply focused context, planning, review, or execution.",
+      "zh": "委派给内置或自定义子代理，用于单代理交接、并行评审、脚本化链式、异步工作、分叉上下文和协调工作流。当一个父代理保持控制、子代理提供聚焦的上下文、规划、评审或执行时使用。"
+    },
+    "mcp-scripting": {
+      "en": "Write mcpScript JavaScript for discovering, inspecting, and calling MCP tools.",
+      "zh": "编写 mcpScript JavaScript 用于发现、检查和调用 MCP 工具。"
+    },
+    "design-deck": {
+      "en": "Present visual options for architecture, UI, and code decisions with high-fidelity side-by-side previews. For comparing approaches visually — code diffs, diagrams, UI mockups, images — not for gathering structured input (use interview for that). Supports previewBlocks (code, mermaid, image, html), previewHtml, generate-more loops, and plan/PRD-driven flows.",
+      "zh": "以高保真并排预览呈现架构、UI 和代码决策的可视化选项。用于可视化比较方案——代码差异、图表、UI 模型、图像——而非收集结构化输入（用 interview）。支持 previewBlocks（code、mermaid、image、html）、previewHtml、generate-more 循环和计划/PRD 驱动的流程。"
+    },
+    "archify": {
+      "en": "Create polished, validated architecture, workflow, sequence, data-flow, and lifecycle/state diagrams as explorable standalone HTML with inline SVG, dark/light themes, optional trace motion, and PNG/JPEG/WebP/SVG/WebM export. Accept plain-language requirements or pasted Mermaid flowchart, sequenceDiagram, and stateDiagram input; inspect repository evidence when the diagram must reflect real code. Use when the user asks to visualize system architecture, infrastructure, cloud/security/network topology, technical workflows, API call sequences, request lifecycles, data pipelines, ETL/ELT, data lineage, state machines, or to convert/beautify Mermaid.",
+      "zh": "创建经过打磨、验证的架构、工作流、时序、数据流和生命周期/状态图，作为可探索的独立 HTML，带内联 SVG、深色/浅色主题、可选轨迹动效和 PNG/JPEG/WebP/SVG/WebM 导出。接受自然语言需求或粘贴的 Mermaid flowchart、sequenceDiagram、stateDiagram 输入；当图表需反映真实代码时检查仓库证据。当用户要求可视化系统架构、基础设施、云/安全/网络拓扑、技术工作流、API 调用序列、请求生命周期、数据管线、ETL/ELT、数据血缘、状态机，或转换/美化 Mermaid 时使用。"
+    },
+    "code-check": {
+      "en": "C/C++ 代码写后校验流程：CMake 编译 + CLion MCP 查错（mcpScript 批量 clion_get_file_problems）+ 诊断快照 + code-style 审查。写或改完 C/C++ 代码后使用，或用户说\"代码检查/校验/跑一遍检查流程\"时使用。",
+      "zh": "C/C++ 代码写后校验流程：CMake 编译 + CLion MCP 查错（mcpScript 批量 clion_get_file_problems）+ 诊断快照 + code-style 审查。写或改完 C/C++ 代码后使用，或用户说\"代码检查/校验/跑一遍检查流程\"时使用。"
+    },
+    "code-style": {
+      "en": "Coding style preferences — prefer Python3 standard library and C++ STL over third-party dependencies, avoid reinventing wheels, follow idiomatic modern Python and C++. Apply whenever writing or reviewing Python or C++ code.",
+      "zh": "编码风格偏好——优先使用 Python3 标准库和 C++ STL 而非第三方依赖，避免重复造轮子，遵循地道的现代 Python 和 C++。编写或审查 Python 或 C++ 代码时应用。"
+    },
+    "devtoys": {
+      "en": "Launch DevToys (developer Swiss Army knife) and open specific tools via its devtoys: URI scheme. Use when the user wants to format/convert JSON, YAML, Base64, JWT, regex, hash, UUID, or open the DevToys GUI.",
+      "zh": "启动 DevToys（开发者瑞士军刀）并通过其 devtoys: URI 方案打开特定工具。当用户想格式化/转换 JSON、YAML、Base64、JWT、正则、哈希、UUID，或打开 DevToys GUI 时使用。"
+    },
+    "git-identity": {
+      "en": "User's Git/GitHub/SSH identity — GitHub username GBLMX, git user.name GBX1219_, user.email muzhibaoxiang@163.com_, and the ed25519 SSH public key. Load when signing commits, configuring git, referencing GitHub repos, or handling SSH authentication.",
+      "zh": "用户的 Git/GitHub/SSH 身份——GitHub 用户名 GBLMX，git user.name GBX1219_，user.email muzhibaoxiang@163.com_，以及 ed25519 SSH 公钥。签署提交、配置 git、引用 GitHub 仓库或处理 SSH 认证时加载。"
+    },
+    "lean4": {
+      "en": "Lean 4 theorem prover / functional programming workflow — elan toolchain management, lake projects, Mathlib setup, VS Code lean4 extension, Unicode input, and troubleshooting. Apply whenever writing, building, or configuring Lean 4 code, creating Lake projects, setting up Mathlib, or managing the elan toolchain.",
+      "zh": "Lean 4 定理证明器/函数式编程工作流——elan 工具链管理、lake 项目、Mathlib 设置、VS Code lean4 扩展、Unicode 输入和故障排查。编写、构建或配置 Lean 4 代码、创建 Lake 项目、设置 Mathlib 或管理 elan 工具链时应用。"
+    },
+    "m365": {
+      "en": "Automate Microsoft 365 (Office) applications — Word, Excel, PowerPoint, Outlook, OneNote — via COM automation and command line. Use for creating/reading/editing Office documents, spreadsheets, presentations, and email/calendar operations. Applies when the user wants to work with .docx/.xlsx/.pptx files or control Office apps programmatically.",
+      "zh": "通过 COM 自动化和命令行自动化 Microsoft 365（Office）应用——Word、Excel、PowerPoint、Outlook、OneNote。用于创建/读取/编辑 Office 文档、电子表格、演示文稿以及邮件/日历操作。当用户想处理 .docx/.xlsx/.pptx 文件或以编程方式控制 Office 应用时应用。"
+    },
+    "markdown": {
+      "en": "Markdown writing style conventions — heading hierarchy, lists, code blocks with language tags, tables, links, and Chinese-English spacing. Apply whenever writing or editing Markdown files (.md), README, docs, or notes.",
+      "zh": "Markdown 写作风格约定——标题层级、列表、带语言标签的代码块、表格、链接和中英文间距。编写或编辑 Markdown 文件（.md）、README、文档或笔记时应用。"
+    },
+    "powertoys": {
+      "en": "Control Windows PowerToys utilities via command line. Use for FancyZones window layout management (list/set layouts, hotkeys, monitors), File Locksmith (find/kill processes locking files), and launching PowerToys modules. Applies when the user wants to manage window layouts or interact with PowerToys features.",
+      "zh": "通过命令行控制 Windows PowerToys 工具。用于 FancyZones 窗口布局管理（列出/设置布局、快捷键、显示器）、File Locksmith（查找/终止锁定文件的进程）和启动 PowerToys 模块。当用户想管理窗口布局或与 PowerToys 功能交互时应用。"
+    },
+    "pycheck": {
+      "en": "Python 代码写后校验流程：black 格式化 + flake8 lint + mypy 类型检查 + pytest 测试 + PyCharm MCP 查错。写或改完 Python 代码后使用，或用户说\"检查 Python 代码/pycheck\"时使用。",
+      "zh": "Python 代码写后校验流程：black 格式化 + flake8 lint + mypy 类型检查 + pytest 测试 + PyCharm MCP 查错。写或改完 Python 代码后使用，或用户说\"检查 Python 代码/pycheck\"时使用。"
+    },
+    "treesize": {
+      "en": "Launch and control TreeSize Free (disk space analyzer) to scan folders and visualize disk usage. Use when the user wants to analyze disk space, find large files/folders, or open TreeSize Free to scan a specific directory.",
+      "zh": "启动并控制 TreeSize Free（磁盘空间分析器）来扫描文件夹和可视化磁盘占用。当用户想分析磁盘空间、查找大文件/文件夹，或打开 TreeSize Free 扫描特定目录时使用。"
+    },
+    "versor": {
+      "en": "Versor (libvsr) C++ Geometric Algebra (Clifford algebra) library — build system, namespaces, CGA3D types, construction/generation API, and examples. Apply whenever building, writing, or studying code with the Versor library, or working on geometric algebra / Clifford algebra in C++.",
+      "zh": "Versor (libvsr) C++ 几何代数（Clifford 代数）库——构建系统、命名空间、CGA3D 类型、构造/生成 API 和示例。构建、编写或研究 Versor 库代码，或做 C++ 几何代数/Clifford 代数工作时应用。"
+    },
+    "wolfram": {
+      "en": "Wolfram Mathematica / Wolfram Language toolchain — wolframscript CLI, WolframKernel, wolfram.exe, local kernel evaluation, and scripting. Apply whenever running, writing, or configuring Wolfram Language code, Mathematica scripting, or symbolic/numeric computation via the command line.",
+      "zh": "Wolfram Mathematica / Wolfram 语言工具链——wolframscript CLI、WolframKernel、wolfram.exe、本地内核求值和脚本编写。运行、编写或配置 Wolfram 语言代码、Mathematica 脚本，或通过命令行进行符号/数值计算时应用。"
+    },
+    "wsl": {
+      "en": "通过 pi 的 bash 工具操控 Windows WSL（Ubuntu-26.04）：在 Linux 里跑命令、跨 Windows/WSL 文件互访、管理发行版。需要执行 Linux 命令、用 Linux 工具链、或跨系统文件操作时使用。",
+      "zh": "通过 pi 的 bash 工具操控 Windows WSL（Ubuntu-26.04）：在 Linux 里跑命令、跨 Windows/WSL 文件互访、管理发行版。需要执行 Linux 命令、用 Linux 工具链、或跨系统文件操作时使用。"
+    },
+    "minecraft-skin": {
+      "en": "Create, edit, and render Minecraft player skins with full double-layer (hat/jacket/sleeve/pants) and Steve/Alex model support. Features realistic shading (gradient + cylindrical lighting + fabric noise), patterns, preset templates, reference-image color sampling, and 3D rendering. Use when the user wants to generate or customize Minecraft skin PNG files programmatically.",
+      "zh": "创建、编辑和渲染 Minecraft 玩家皮肤，支持完整的双层（帽子/外套/袖子/裤子）和 Steve/Alex 模型。特性包括真实着色（渐变 + 圆柱光照 + 布料噪点）、图案、预设模板、参考图像颜色采样和 3D 渲染。当用户想以编程方式生成或自定义 Minecraft 皮肤 PNG 文件时使用。"
+    }
+  }
+}

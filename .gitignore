@@ -1,0 +1,9 @@
+# 备份文件（patch 前自动生成的英文原文）
+*.bak
+
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/

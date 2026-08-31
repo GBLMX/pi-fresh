@@ -1,0 +1,12 @@
+{
+  "name": "pi-fresh",
+  "version": "0.1.0",
+  "description": "中文化 pi 的 slash 命令描述（内置命令 / 扩展命令 / skill 命令），含 update 兼容检测",
+  "type": "module",
+  "license": "MIT",
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}
