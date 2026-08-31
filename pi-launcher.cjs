@@ -191,6 +191,7 @@ function applyProfile(name) {
 // ---------- 功能 ----------
 function launchPi() {
   console.log("\n正在启动 pi ...\n");
+  rl.close(); // 释放 stdin 并恢复终端模式，避免 launcher 与 pi 抢键盘输入
   const child = spawn(PI_NODE, [PI_CLI], { stdio: "inherit", env: process.env });
   child.on("exit", (code, signal) => process.exit(code ?? (signal ? 1 : 0)));
   child.on("error", (e) => {
