@@ -6,7 +6,7 @@
   "license": "MIT",
   "pi": {
     "extensions": [
-      "./index.ts"
+      "./cn-slash/index.ts"
     ]
   }
 }

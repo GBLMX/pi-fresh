@@ -124,10 +124,6 @@
       "en": "Show the active Google account for Gemini Web",
       "zh": "显示 Gemini Web 当前使用的 Google 账号"
     },
-    "intake": {
-      "en": "Run an intake questionnaire from a JSON spec file. Optionally write the result to --output.",
-      "zh": "从 JSON 规格文件运行问卷。可用 --output 写入结果。"
-    },
     "lens-allow-edit": {
       "en": "Allow one edit to a file without a prior read. Usage: /lens-allow-edit <path>",
       "zh": "允许对文件进行一次未经读取的编辑。用法：/lens-allow-edit <path>"
@@ -284,10 +280,6 @@
       "en": "Set working message theme. Usage: /vibe [theme|off|mode|model|generate]",
       "zh": "设置工作消息主题。用法：/vibe [theme|off|mode|model|generate]"
     },
-    "vm": {
-      "en": "pi-vault-mind: manage collections, embedding, indexing, and config.",
-      "zh": "pi-vault-mind：管理集合、嵌入、索引和配置。"
-    },
     "websearch": {
       "en": "Open web search curator",
       "zh": "打开网页搜索策展器"
@@ -310,30 +302,6 @@
       "en": "Use when writing a new pi-lens tree-sitter query rule YAML file — covers schema, S-expression syntax, capture names, predicates, and gotchas",
       "zh": "编写新的 pi-lens tree-sitter 查询规则 YAML 文件时使用——涵盖 schema、S 表达式语法、捕获名、谓词和陷阱"
     },
-    "vault-mind": {
-      "en": "Universal append-only JSONL collection with LanceDB semantic search, full-text search, graph relationships, and tiered HITL (strict, gated, autopilot). Use when tracking structured facts, decisions, requirements, research, or any append-only record across projects. Supports dynamic context injection into prompts. Install the pi-vault-mind extension first.",
-      "zh": "通用追加式 JSONL 集合，带 LanceDB 语义搜索、全文搜索、图关系和分层 HITL（严格、门控、自动）。用于跨项目跟踪结构化事实、决策、需求、研究或任何追加式记录。支持向提示词动态注入上下文。请先安装 pi-vault-mind 扩展。"
-    },
-    "vault-mind-broadcaster": {
-      "en": "The NotebookLM Controller agent for pi-vault-mind. Triggered by @agent:podcast or status:needs-podcast. Uses nlm CLI or MCP tools to generate audio overviews, study guides, and flashcards from vault sources.",
-      "zh": "pi-vault-mind 的 NotebookLM 控制器代理。由 @agent:podcast 或 status:needs-podcast 触发。使用 nlm CLI 或 MCP 工具从 vault 源生成音频概览、学习指南和闪卡。"
-    },
-    "vault-mind-heavy-lifter": {
-      "en": "The Delegator agent for pi-vault-mind. Triggered by @agent:deep-analysis or @agent:refactor. Acts as a commander for external coding assistants (Claude Code, Gemini CLI) to handle massive context windows or complex codebase refactoring.",
-      "zh": "pi-vault-mind 的委派者代理。由 @agent:deep-analysis 或 @agent:refactor 触发。作为外部编码助手（Claude Code、Gemini CLI）的指挥官，处理海量上下文窗口或复杂代码库重构。"
-    },
-    "vault-mind-manager": {
-      "en": "The primary interactive agent (Synthesizer) for pi-vault-mind. Use for high-level planning, roadmap synthesis, and reviewing the output of subagents. Controls the overall narrative and final approval of knowledge content.",
-      "zh": "pi-vault-mind 的主要交互代理（综合器）。用于高层规划、路线图综合和审阅子代理输出。控制整体叙事和知识内容的最终审批。"
-    },
-    "vault-mind-miner": {
-      "en": "The Researcher agent for pi-vault-mind. Triggered by @agent:research or @agent:ingest. Responsible for knowledge ingestion, entity extraction, deduplication, and writing to the collections.",
-      "zh": "pi-vault-mind 的研究者代理。由 @agent:research 或 @agent:ingest 触发。负责知识摄取、实体提取、去重和写入集合。"
-    },
-    "vault-mind-setup": {
-      "en": "Setup and management assistant for pi-vault-mind (the passive Obsidian vault extension for pi). Use for first-time setup, configuration changes, troubleshooting, Obsidian plugin recommendations, upgrade paths, multi-vault management, and dependency auditing. Trigger phrases: \"set up vault-mind\", \"configure obsidian\", \"install pi-vault-mind\", \"/vm setup\", \"watcher not working\", \"vault-mind troubleshooting\", \"add another vault\", \"upgrade pi-vault-mind\".",
-      "zh": "pi-vault-mind 的设置与管理助手。用于首次设置、配置更改、故障排查、Obsidian 插件推荐、升级路径、多 vault 管理和依赖审计。"
-    },
     "council-mode": {
       "en": "Run a bounded supervisor-mediated advisor council. Use when the user asks for council mode, asks to convene advisors, debate a decision, cross-examine recommendations, or run /council.",
       "zh": "运行一个有界的、由监督者主持的顾问委员会。当用户要求 council 模式、召集顾问、辩论决策、交叉审查建议或运行 /council 时使用。"
@@ -345,6 +313,10 @@
     "mcp-scripting": {
       "en": "Write mcpScript JavaScript for discovering, inspecting, and calling MCP tools.",
       "zh": "编写 mcpScript JavaScript 用于发现、检查和调用 MCP 工具。"
+    },
+    "multi-session-chat": {
+      "en": "全局 pi 与 pi-bare 等多 agent 目录会话间的跨会话实时聊天与离线留言——中继桥（intercom-bridge）、共享邮箱（chatbox）、/chat 斜杠命令、开机自启与排障。需要在多个 pi 会话/不同 agent 目录之间互相发消息、协调工作或给离线会话留言时使用。",
+      "zh": "全局 pi 与 pi-bare 等多 agent 目录会话间的跨会话实时聊天与离线留言——中继桥（intercom-bridge）、共享邮箱（chatbox）、/chat 斜杠命令、开机自启与排障。需要在多个 pi 会话/不同 agent 目录之间互相发消息、协调工作或给离线会话留言时使用。"
     },
     "design-deck": {
       "en": "Present visual options for architecture, UI, and code decisions with high-fidelity side-by-side previews. For comparing approaches visually — code diffs, diagrams, UI mockups, images — not for gathering structured input (use interview for that). Supports previewBlocks (code, mermaid, image, html), previewHtml, generate-more loops, and plan/PRD-driven flows.",
