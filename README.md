@@ -17,16 +17,15 @@ node E:\pi-fresh\launcher\pi-launcher.cjs
 
 | 键 | 功能 |
 |---|---|
-| `1` | 启动 pi（spawn `node cli.js`，stdio 继承，退出后随 pi 退出） |
-| `2` | 更新（`pi update`） |
-| `3` | 扩展管理（启用 / 禁用 package / skill / extension） |
-| `4` | 回退版本（对本地 git 包 `checkout` 历史 commit） |
-| `5` | 配置组合（把当前启用 / 禁用状态存为命名组合，一键切换） |
+| `1` | 启动 pi（global，spawn `node cli.js`，stdio 继承，退出后随 pi 退出） |
+| `2` | 启动 bare rescue pi（`PI_CODING_AGENT_DIR=E:\pi-bare\agent`） |
+| `3` | 更新（`pi update` + 自动 cn-slash check/apply） |
+| `4` | 扩展管理（启用 / 禁用 package / skill / extension） |
+| `5` | 版本回退（agent / pi-fresh 双仓库 git checkout） |
 | `0` | 退出 |
 
 本地状态文件（已 gitignore，不提交）：
 
-- `launcher/profiles.json` —— 配置组合
 - `launcher/disabled-packages.json` —— 被禁用的 package 列表
 
 ---
@@ -84,7 +83,6 @@ pi-fresh/
 ├── package.json               pi 包清单（pi.extensions = ./cn-slash/index.ts）
 ├── launcher/
 │   ├── pi-launcher.cjs        启动菜单（唯一入口）
-│   ├── profiles.json          配置组合（gitignore）
 │   └── disabled-packages.json 禁用 package（gitignore）
 ├── cn-slash/
 │   ├── index.ts               pi extension，注册 /cn-check /cn-apply

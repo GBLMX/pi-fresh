@@ -1,4 +1,4 @@
-# pi-launcher 改造方案
+# pi-launcher 改造方案（已执行完成 2026-09-03）
 
 > 基于分析：launcher 花大量代码做低频功能（配置组合、单包回退），却缺高频自救功能（bare rescue、update 后 cn-slash）。
 
