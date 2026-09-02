@@ -17,9 +17,8 @@ const SETTINGS = path.join(AGENT_DIR, "settings.json");
 const SKILLS_DIR = path.join(AGENT_DIR, "skills");
 const EXT_DIR = path.join(AGENT_DIR, "extensions");
 const DISABLED = path.join(__dirname, "disabled-packages.json");
-const PROFILES = path.join(__dirname, "profiles.json");
 
-const PI_NODE = process.env.PI_NODE || "C:\\Program Files\\nodejs\\node.exe";
+const PI_NODE = process.env.PI_NODE || "E:\\nodejs\\node.exe";
 const PI_CLI =
   process.env.PI_CLI ||
   "E:\\npm\\node_modules\\@earendil-works\\pi-coding-agent\\dist\\bundle\\cli.js";
@@ -122,72 +121,6 @@ function toggleExtension(item) {
   }
 }
 
-// ---------- 配置组合 ----------
-function currentProfile() {
-  const settings = readJson(SETTINGS, { packages: [] });
-  const disabledPkgs = readJson(DISABLED, []);
-  const disabledSkills = readDir(SKILLS_DIR)
-    .filter((f) => f.endsWith(".disabled"))
-    .map((f) => f.slice(0, -".disabled".length));
-  const disabledExtensions = readDir(EXT_DIR)
-    .filter((f) => f.endsWith(".disabled"))
-    .map((f) => f.slice(0, -".disabled".length));
-  return {
-    packages: settings.packages || [],
-    disabledPackages: disabledPkgs,
-    disabledSkills,
-    disabledExtensions,
-  };
-}
-
-function listProfiles() {
-  return readJson(PROFILES, {});
-}
-
-function saveProfile(name) {
-  const profiles = listProfiles();
-  profiles[name] = currentProfile();
-  writeJson(PROFILES, profiles);
-}
-
-function deleteProfile(name) {
-  const profiles = listProfiles();
-  delete profiles[name];
-  writeJson(PROFILES, profiles);
-}
-
-function setDirDisabled(dir, disabledNames) {
-  // 先全部启用（去掉 .disabled），再禁用组合里标记的
-  for (const f of readDir(dir)) {
-    if (f.endsWith(".disabled")) {
-      try {
-        fs.renameSync(path.join(dir, f), path.join(dir, f.slice(0, -".disabled".length)));
-      } catch {}
-    }
-  }
-  for (const name of disabledNames) {
-    const target = path.join(dir, name);
-    if (fs.existsSync(target)) {
-      try {
-        fs.renameSync(target, target + ".disabled");
-      } catch {}
-    }
-  }
-}
-
-function applyProfile(name) {
-  const profiles = listProfiles();
-  const p = profiles[name];
-  if (!p) return false;
-  const settings = readJson(SETTINGS, {});
-  settings.packages = p.packages || [];
-  writeJson(SETTINGS, settings);
-  writeJson(DISABLED, p.disabledPackages || []);
-  setDirDisabled(SKILLS_DIR, p.disabledSkills || []);
-  setDirDisabled(EXT_DIR, p.disabledExtensions || []);
-  return true;
-}
-
 // ---------- 功能 ----------
 let launched = false; // 启动 pi 后忽略 readline 缓冲里残留的 line，防误 spawn/误 exit
 function launchPi() {
@@ -227,7 +160,7 @@ function gitLog(dir) {
 }
 
 // ---------- 状态机 + render ----------
-let state = "main"; // main | ext | rollback-select | rollback-version | profiles | profile-save | profile-delete
+let state = "main"; // main | ext | rollback-select | rollback-version
 let rollbackSelected = null;
 let rollbackLogs = [];
 
@@ -238,7 +171,6 @@ function render() {
     console.log(" [2] 更新（pi update）");
     console.log(" [3] 扩展管理");
     console.log(" [4] 回退版本");
-    console.log(" [5] 配置组合");
     console.log(" [0] 退出");
     process.stdout.write("选择: ");
   } else if (state === "ext") {
@@ -266,26 +198,6 @@ function render() {
     rollbackLogs.forEach((l, i) => console.log(` [${i + 1}] ${l}`));
     console.log(" [0] 返回");
     process.stdout.write("选择要回退到的版本: ");
-  } else if (state === "profiles") {
-    const profiles = listProfiles();
-    const names = Object.keys(profiles);
-    console.log("\n======== 配置组合 ========");
-    if (names.length === 0) {
-      console.log(" （无已保存组合）");
-    } else {
-      console.log(" 已保存组合：");
-      names.forEach((n, i) => console.log(`   [${i + 1}] ${n}`));
-    }
-    console.log(" [N] 保存当前为组合   [D] 删除组合   [0] 返回");
-    process.stdout.write("选择: ");
-  } else if (state === "profile-save") {
-    process.stdout.write("\n输入组合名字: ");
-  } else if (state === "profile-delete") {
-    const names = Object.keys(listProfiles());
-    console.log("\n删除组合：");
-    names.forEach((n, i) => console.log(`   [${i + 1}] ${n}`));
-    console.log(" [0] 取消");
-    process.stdout.write("选择: ");
   }
 }
 
@@ -300,8 +212,7 @@ rl.on("line", (line) => {
     else if (a === "4") {
       rollbackSelected = null;
       state = "rollback-select";
-    } else if (a === "5") state = "profiles";
-    else if (a === "0") {
+    } else if (a === "0") {
       console.log("退出。");
       process.exit(0);
     } else console.log(" 无效选择");
@@ -348,42 +259,6 @@ rl.on("line", (line) => {
         }
         rollbackSelected = null;
         state = "rollback-select";
-      } else console.log("  无效编号");
-    }
-  } else if (state === "profiles") {
-    const profiles = listProfiles();
-    const names = Object.keys(profiles);
-    if (a === "0" || a === "") {
-      state = "main";
-    } else if (a.toLowerCase() === "n") {
-      state = "profile-save";
-    } else if (a.toLowerCase() === "d") {
-      state = "profile-delete";
-    } else {
-      const idx = parseInt(a, 10) - 1;
-      if (idx >= 0 && idx < names.length) {
-        if (applyProfile(names[idx])) console.log(`  已切换到组合「${names[idx]}」`);
-        else console.log("  应用失败");
-      } else console.log("  无效选择");
-    }
-  } else if (state === "profile-save") {
-    if (a === "") {
-      state = "profiles";
-    } else {
-      saveProfile(a);
-      console.log(`  已保存组合「${a}」`);
-      state = "profiles";
-    }
-  } else if (state === "profile-delete") {
-    const names = Object.keys(listProfiles());
-    if (a === "0" || a === "") {
-      state = "profiles";
-    } else {
-      const idx = parseInt(a, 10) - 1;
-      if (idx >= 0 && idx < names.length) {
-        deleteProfile(names[idx]);
-        console.log(`  已删除组合「${names[idx]}」`);
-        state = "profiles";
       } else console.log("  无效编号");
     }
   }
