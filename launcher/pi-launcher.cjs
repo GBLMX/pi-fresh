@@ -135,23 +135,39 @@ function launchPi() {
   });
 }
 
+function launchBarePi() {
+  launched = true;
+  console.log("\n正在启动 bare rescue pi ...\n");
+  rl.close();
+  const env = { ...process.env, PI_CODING_AGENT_DIR: "E:\\pi-bare\\agent" };
+  const child = spawn(PI_NODE, [PI_CLI], { stdio: "inherit", env });
+  child.on("exit", (code, signal) => process.exit(code ?? (signal ? 1 : 0)));
+  child.on("error", (e) => {
+    console.error("启动 bare pi 失败:", e.message);
+    process.exit(1);
+  });
+}
+
 function doUpdate() {
   console.log("\n运行 pi update ...\n");
   const r = spawnSync("pi", ["update"], { stdio: "inherit" });
-  if (r.status === 0) console.log("\npi update 完成。");
-  else console.log(`\npi update 失败（退出码 ${r.status}）。`);
+  if (r.status !== 0) {
+    console.log(`\npi update 失败（退出码 ${r.status}）。`);
+    return;
+  }
+  console.log("\npi update 完成。重新应用中文斜杠描述 ...\n");
+  spawnSync(PI_NODE, [path.join(__dirname, "..", "cn-slash", "cli.cjs"), "check"], { stdio: "inherit" });
+  spawnSync(PI_NODE, [path.join(__dirname, "..", "cn-slash", "cli.cjs"), "apply"], { stdio: "inherit" });
+  console.log("\n更新完成（含 cn-slash 重应用）。");
 }
 
-function findLocalGitPkgs() {
-  const settings = readJson(SETTINGS, { packages: [] });
-  const settingsDir = path.dirname(SETTINGS);
-  const result = [];
-  for (const p of settings.packages || []) {
-    if (p.startsWith("npm:") || p.startsWith("git:")) continue;
-    const abs = path.resolve(settingsDir, p);
-    if (fs.existsSync(path.join(abs, ".git"))) result.push({ name: p, dir: abs });
-  }
-  return result;
+const ROLLBACK_TARGETS = [
+  { name: "agent", dir: AGENT_DIR },
+  { name: "pi-fresh", dir: path.resolve(__dirname, "..") },
+];
+
+function findRollbackTargets() {
+  return ROLLBACK_TARGETS.filter((t) => fs.existsSync(path.join(t.dir, ".git")));
 }
 
 function gitLog(dir) {
@@ -167,10 +183,11 @@ let rollbackLogs = [];
 function render() {
   if (state === "main") {
     console.log("\n======== pi launcher ========");
-    console.log(" [1] 启动 pi");
-    console.log(" [2] 更新（pi update）");
-    console.log(" [3] 扩展管理");
-    console.log(" [4] 回退版本");
+    console.log(" [1] 启动 pi（global）");
+    console.log(" [2] 启动 bare rescue pi");
+    console.log(" [3] 更新（pi update + cn-slash）");
+    console.log(" [4] 扩展管理");
+    console.log(" [5] 版本回退（agent / pi-fresh）");
     console.log(" [0] 退出");
     process.stdout.write("选择: ");
   } else if (state === "ext") {
@@ -183,16 +200,16 @@ function render() {
     console.log(" [0] 返回主菜单");
     process.stdout.write("选择编号: ");
   } else if (state === "rollback-select") {
-    const pkgs = findLocalGitPkgs();
-    console.log("\n======== 回退版本 ========");
+    const pkgs = findRollbackTargets();
+    console.log("\n======== 版本回退 ========");
     if (pkgs.length === 0) {
-      console.log(" 没有可回退的本地 git 包");
+      console.log(" 没有可回退的 git 仓库");
       process.stdout.write("按回车返回: ");
       return;
     }
     pkgs.forEach((p, i) => console.log(` [${i + 1}] ${p.name}  (${p.dir})`));
     console.log(" [0] 返回");
-    process.stdout.write("选择包: ");
+    process.stdout.write("选择仓库: ");
   } else if (state === "rollback-version") {
     console.log(`\n${rollbackSelected.name} 的 git 历史（最近 ${rollbackLogs.length} 条）:`);
     rollbackLogs.forEach((l, i) => console.log(` [${i + 1}] ${l}`));
@@ -207,9 +224,10 @@ rl.on("line", (line) => {
 
   if (state === "main") {
     if (a === "1") return launchPi();
-    if (a === "2") doUpdate();
-    else if (a === "3") state = "ext";
-    else if (a === "4") {
+    if (a === "2") return launchBarePi();
+    if (a === "3") doUpdate();
+    else if (a === "4") state = "ext";
+    else if (a === "5") {
       rollbackSelected = null;
       state = "rollback-select";
     } else if (a === "0") {
@@ -226,7 +244,7 @@ rl.on("line", (line) => {
       else console.log("  无效编号");
     }
   } else if (state === "rollback-select") {
-    const pkgs = findLocalGitPkgs();
+    const pkgs = findRollbackTargets();
     if (pkgs.length === 0) {
       state = "main";
       render();
