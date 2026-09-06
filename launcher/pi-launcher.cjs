@@ -3,7 +3,7 @@
  * pi-launcher：pi 启动菜单（launcher）
  *
  * 受限菜单：只响应菜单键，不是自由终端。
- *   [1] 启动 pi  [2] 更新  [3] 扩展管理  [4] 回退版本  [5] 配置组合  [0] 退出
+ *   [1] 启动 pi  [2] bare rescue  [3] 更新  [4] 扩展  [5] 回退  [6] 启动 omp  [0] 退出
  *
  * 配置组合：把当前扩展启用/禁用状态存为命名组合，一键切换。
  */
@@ -22,6 +22,12 @@ const PI_NODE = process.env.PI_NODE || "E:\\nodejs\\node.exe";
 const PI_CLI =
   process.env.PI_CLI ||
   "E:\\npm\\node_modules\\@earendil-works\\pi-coding-agent\\dist\\bundle\\cli.js";
+
+// omp（pi 衍生版）：bun-only，需 bun.exe + omp 的 cli.js，且不读 pi 的 auth.json 嵌套结构
+const OMP_BUN = process.env.OMP_BUN || "E:\\npm\\node_modules\\bun\\bin\\bun.exe";
+const OMP_CLI =
+  process.env.OMP_CLI ||
+  "E:\\npm\\node_modules\\@oh-my-pi\\pi-coding-agent\\dist\\cli.js";
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -148,6 +154,28 @@ function launchBarePi() {
   });
 }
 
+function launchOmp() {
+  launched = true;
+  console.log("\n正在启动 omp ...\n");
+  rl.close();
+  const env = { ...process.env };
+  // omp 用自身默认目录 ~/.omp/agent，勿继承 pi 的 PI_CODING_AGENT_DIR（否则与 pi 撞目录、herdr 集成装不上）
+  delete env.PI_CODING_AGENT_DIR;
+  // omp 不读 pi 的 auth.json 嵌套结构，桥接 deepseek key 到 DEEPSEEK_API_KEY
+  if (!env.DEEPSEEK_API_KEY) {
+    try {
+      const auth = JSON.parse(fs.readFileSync(path.join(AGENT_DIR, "auth.json"), "utf-8"));
+      if (auth.deepseek && auth.deepseek.key) env.DEEPSEEK_API_KEY = auth.deepseek.key;
+    } catch {}
+  }
+  const child = spawn(OMP_BUN, [OMP_CLI], { stdio: "inherit", env });
+  child.on("exit", (code, signal) => process.exit(code ?? (signal ? 1 : 0)));
+  child.on("error", (e) => {
+    console.error("启动 omp 失败:", e.message);
+    process.exit(1);
+  });
+}
+
 function doUpdate() {
   console.log("\n运行 pi update ...\n");
   const r = spawnSync("pi", ["update"], { stdio: "inherit" });
@@ -188,6 +216,7 @@ function render() {
     console.log(" [3] 更新（pi update + cn-slash）");
     console.log(" [4] 扩展管理");
     console.log(" [5] 版本回退（agent / pi-fresh）");
+    console.log(" [6] 启动 omp（pi 衍生版）");
     console.log(" [0] 退出");
     process.stdout.write("选择: ");
   } else if (state === "ext") {
@@ -230,7 +259,8 @@ rl.on("line", (line) => {
     else if (a === "5") {
       rollbackSelected = null;
       state = "rollback-select";
-    } else if (a === "0") {
+    } else if (a === "6") return launchOmp();
+    else if (a === "0") {
       console.log("退出。");
       process.exit(0);
     } else console.log(" 无效选择");
