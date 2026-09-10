@@ -2,14 +2,14 @@
 /**
  * pi-launcher：pi 启动菜单（launcher）
  *
- * 受限菜单：只响应菜单键，不是自由终端。
- *   [1] 启动 pi  [2] bare rescue  [3] 更新  [4] 扩展  [5] 回退  [6] 启动 omp  [0] 退出
- *
- * 配置组合：把当前扩展启用/禁用状态存为命名组合，一键切换。
+ * 受限菜单：只响应菜单键，不是自由终端。桌面 pi-wt.lnk 现已直连 herdr，
+ * 本菜单是回退 / 自救入口（bare rescue、update、扩展与版本管理）。
+ *   [1] pi  [2] herdr  [3] bare rescue  [4] omp  [5] 更新  [6] 扩展  [7] 回退  [0] 退出
  */
 const readline = require("node:readline");
 const { spawn, spawnSync } = require("node:child_process");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
 
 const AGENT_DIR = process.env.PI_CODING_AGENT_DIR || "E:/pi/agent";
@@ -28,6 +28,11 @@ const OMP_BUN = process.env.OMP_BUN || "E:\\npm\\node_modules\\bun\\bin\\bun.exe
 const OMP_CLI =
   process.env.OMP_CLI ||
   "E:\\npm\\node_modules\\@oh-my-pi\\pi-coding-agent\\dist\\cli.js";
+
+// herdr：terminal workspace manager。走 standalone 包的 current junction（稳定，不随版本号失效）
+const HERDR_EXE =
+  process.env.HERDR_EXE ||
+  path.join(os.homedir(), ".herdr", "packages", "standalone", "current", "herdr.exe");
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -128,36 +133,31 @@ function toggleExtension(item) {
 }
 
 // ---------- 功能 ----------
-let launched = false; // 启动 pi 后忽略 readline 缓冲里残留的 line，防误 spawn/误 exit
-function launchPi() {
+let launched = false; // 启动子进程后忽略 readline 缓冲里残留的 line，防误 spawn/误 exit
+function launch(label, cmd, args, env = process.env) {
   launched = true;
-  console.log("\n正在启动 pi ...\n");
-  rl.close(); // 释放 stdin 并恢复终端模式，避免 launcher 与 pi 抢键盘输入
-  const child = spawn(PI_NODE, [PI_CLI], { stdio: "inherit", env: process.env });
+  console.log(`\n正在启动 ${label} ...\n`);
+  rl.close(); // 释放 stdin 并恢复终端模式，避免 launcher 与被启动程序抢键盘输入
+  const child = spawn(cmd, args, { stdio: "inherit", env });
   child.on("exit", (code, signal) => process.exit(code ?? (signal ? 1 : 0)));
   child.on("error", (e) => {
-    console.error("启动 pi 失败:", e.message);
+    console.error(`启动 ${label} 失败:`, e.message);
     process.exit(1);
   });
 }
 
+function launchPi() {
+  launch("pi", PI_NODE, [PI_CLI]);
+}
+
 function launchBarePi() {
-  launched = true;
-  console.log("\n正在启动 bare rescue pi ...\n");
-  rl.close();
-  const env = { ...process.env, PI_CODING_AGENT_DIR: "E:\\pi-bare\\agent" };
-  const child = spawn(PI_NODE, [PI_CLI], { stdio: "inherit", env });
-  child.on("exit", (code, signal) => process.exit(code ?? (signal ? 1 : 0)));
-  child.on("error", (e) => {
-    console.error("启动 bare pi 失败:", e.message);
-    process.exit(1);
+  launch("bare rescue pi", PI_NODE, [PI_CLI], {
+    ...process.env,
+    PI_CODING_AGENT_DIR: "E:\\pi-bare\\agent",
   });
 }
 
 function launchOmp() {
-  launched = true;
-  console.log("\n正在启动 omp ...\n");
-  rl.close();
   const env = { ...process.env };
   // omp 用自身默认目录 ~/.omp/agent，勿继承 pi 的 PI_CODING_AGENT_DIR（否则与 pi 撞目录、herdr 集成装不上）
   delete env.PI_CODING_AGENT_DIR;
@@ -168,17 +168,22 @@ function launchOmp() {
       if (auth.deepseek && auth.deepseek.key) env.DEEPSEEK_API_KEY = auth.deepseek.key;
     } catch {}
   }
-  const child = spawn(OMP_BUN, [OMP_CLI], { stdio: "inherit", env });
-  child.on("exit", (code, signal) => process.exit(code ?? (signal ? 1 : 0)));
-  child.on("error", (e) => {
-    console.error("启动 omp 失败:", e.message);
+  launch("omp", OMP_BUN, [OMP_CLI], env);
+}
+
+function launchHerdr() {
+  if (!fs.existsSync(HERDR_EXE)) {
+    console.error(`未找到 herdr：${HERDR_EXE}\n（可用 HERDR_EXE 环境变量覆盖路径）`);
     process.exit(1);
-  });
+  }
+  launch("herdr（持久会话 pi）", HERDR_EXE, ["--session", "pi"]);
 }
 
 function doUpdate() {
   console.log("\n运行 pi update ...\n");
-  const r = spawnSync("pi", ["update"], { stdio: "inherit" });
+  // 必须用 node + cli.js：Windows 上 spawnSync("pi") 解析到 npm 的 .cmd/.ps1 shim，
+  // 分别是 ENOENT / EINVAL（Node 禁止无 shell 启动批处理），更新会静默失败。
+  const r = spawnSync(PI_NODE, [PI_CLI, "update"], { stdio: "inherit" });
   if (r.status !== 0) {
     console.log(`\npi update 失败（退出码 ${r.status}）。`);
     return;
@@ -210,13 +215,14 @@ let rollbackLogs = [];
 
 function render() {
   if (state === "main") {
-    console.log("\n======== pi launcher ========");
+    console.log("\n======== pi launcher（回退 / 自救）========");
     console.log(" [1] 启动 pi（global）");
-    console.log(" [2] 启动 bare rescue pi");
-    console.log(" [3] 更新（pi update + cn-slash）");
-    console.log(" [4] 扩展管理");
-    console.log(" [5] 版本回退（agent / pi-fresh）");
-    console.log(" [6] 启动 omp（pi 衍生版）");
+    console.log(" [2] 启动 herdr（持久会话 pi）");
+    console.log(" [3] 启动 bare rescue pi");
+    console.log(" [4] 启动 omp（pi 衍生版）");
+    console.log(" [5] 更新（pi update + cn-slash）");
+    console.log(" [6] 扩展管理");
+    console.log(" [7] 版本回退（agent / pi-fresh）");
     console.log(" [0] 退出");
     process.stdout.write("选择: ");
   } else if (state === "ext") {
@@ -253,14 +259,15 @@ rl.on("line", (line) => {
 
   if (state === "main") {
     if (a === "1") return launchPi();
-    if (a === "2") return launchBarePi();
-    if (a === "3") doUpdate();
-    else if (a === "4") state = "ext";
-    else if (a === "5") {
+    if (a === "2") return launchHerdr();
+    if (a === "3") return launchBarePi();
+    if (a === "4") return launchOmp();
+    if (a === "5") doUpdate();
+    else if (a === "6") state = "ext";
+    else if (a === "7") {
       rollbackSelected = null;
       state = "rollback-select";
-    } else if (a === "6") return launchOmp();
-    else if (a === "0") {
+    } else if (a === "0") {
       console.log("退出。");
       process.exit(0);
     } else console.log(" 无效选择");
